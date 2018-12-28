@@ -142,7 +142,7 @@ class Telegram():
 				continue
 
 def main():
-	token = '645158815:AAHoAKVcAKZX69cigWzwwZlxyePLPDaVhn4'
+	token = '**'
 	bot = Telegram(token)
 	bot.Online()
 	
