@@ -147,6 +147,7 @@ def main():
 	bot = Telegram(token)
 	bot.Online()
 	
+	#Какой-то комментарий
 	#Проверка ответа от яндекс переводчика
 
 if __name__ == '__main__':
