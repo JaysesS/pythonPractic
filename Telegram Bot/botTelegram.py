@@ -3,7 +3,9 @@ import json
 import datetime
 from bs4 import BeautifulSoup
 from time import sleep
-import sys
+import sys, os
+sys.path.append(os.path.abspath(__file__))
+from misc import token
 
 class Telegram():
 
@@ -142,7 +144,6 @@ class Telegram():
 				continue
 
 def main():
-	token = '**'
 	bot = Telegram(token)
 	bot.Online()
 	
