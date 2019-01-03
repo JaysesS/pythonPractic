@@ -22,11 +22,13 @@ class Telegram():
         self.chat_id_list = []
 
     def getMe(self):
+        
         localURL = self.URL + 'getMe'
         r = requests.get(localURL)
         return r.json()
 
     def getUpdates(self):
+
         localURL = self.URL + 'getupdates'
         r = requests.get(localURL)
         return r.json()
@@ -34,7 +36,9 @@ class Telegram():
     def getLastUpdate(self):
 
         try:
+
             return self.getUpdates()['result'][-1]
+
         except IndexError as e:
             pass
 
@@ -43,6 +47,7 @@ class Telegram():
         return int(self.getLastUpdate()['message']['message_id'])
 
     def sendMessageLS(self, chat_id, text):
+
         try:
             localURL = self.URL + 'sendMessage?chat_id='+ str(chat_id) + '&text=' + str(text)
             requests.get(localURL)
@@ -51,6 +56,7 @@ class Telegram():
             file.write('\n1. ' + str(e))
 
     def sendMessageALL(self, text):
+
         try:
             data = self.jsonFromFile()
             for x in data:
@@ -83,6 +89,7 @@ class Telegram():
             return 'Enter more correctly or otherwise..'
 
     def jsonToFile(self, data):
+
         with open('data.json', 'w') as outfile:
             json.dump(data, outfile, sort_keys = True, indent = 4,
                ensure_ascii = False)
@@ -92,10 +99,13 @@ class Telegram():
         return bool(re.search('[а-яА-Я?!.\-:\s]', letter))
 
     def checkAnswerTranslate(self, text):
+
         count = 0
+
         for i in text:
             if self.checkletterAnswer(i) == True:
                 count+=1
+
         if count == len(text):
             return True
         else: 
@@ -112,7 +122,7 @@ class Telegram():
             data = {}
             for i in range(len(self.chat_id_list)):
                 data[i+1] = self.chat_id_list[i]
-            print(data)
+
             with open('interlocutors.json', 'w') as outfile:
                 json.dump(data, outfile)
 
@@ -121,6 +131,7 @@ class Telegram():
         data = self.getUpdates()['result']
         data.reverse()
         message = 'not found'
+
         for x in data:
             if x['message']['chat']['id'] == chat_id:
                 message = x['message']['text']
@@ -143,18 +154,23 @@ class Telegram():
     def function(self, chat_id, message):
 
         if message == '/help':
+
             self.sendMessageLS(chat_id, 'use /translate < what to translate > and all will translated on Russian language!')
 
         elif message == '/start':
+
             self.sendMessageLS(chat_id, 'Hi ! Read /help and goodluck!')
 
         elif '/translate' in message:
+
                 self.sendMessageLS(chat_id, self.translateYandex(message[11:]))
 
         elif message == '/restartbot':
+
             self.sendMessageLS(chat_id, 'W8 I start restarted!')
             os.system("python3 restart.py")
             sys.exit()
+
         else:
             self.sendMessageLS(chat_id, 'I don\'t know what u want =/')
     
@@ -178,6 +194,7 @@ class Telegram():
     def jsonFromFile(self):
 
         try:
+
             with open ('interlocutors.json') as f:
                 data = json.load(f)
 
@@ -191,9 +208,13 @@ class Telegram():
         self.sendMessageALL('Bot was restarted!')
 
         while True:
+
             try:
+
                 isnew = self.isNewMessage()
+
                 if (isnew[0]):
+
                     chat_id = self.getChatId(isnew[1])
                     message = self.getLastMessage(chat_id)
                     self.function(chat_id, message)
@@ -203,6 +224,7 @@ class Telegram():
                 continue
 
 def main():
+
     bot = Telegram(token)
     bot.Online()
 
