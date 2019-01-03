@@ -133,7 +133,7 @@ class Telegram():
         elif '/translate' in message:
             self.sendMessageLS(chat_id, self.translateYandex(message[11:]))
         elif message == '/restartbot':
-            self.sendMessageLS(chat_id, 'W8 I start restarted!')
+            self.sendMessageALL('Wait, I\'m restarting!')
             os.system("python3 restart.py")
             sys.exit()
         else:
