@@ -130,6 +130,8 @@ class Telegram():
             self.sendMessageLS(chat_id, 'use /translate < what to translate > and all will translated on Russian language!')
         elif message == '/start':
             self.sendMessageLS(chat_id, 'Hi ! Read /help and goodluck!')
+        elif '/sendAll' in message:
+        	self.sendMessageALL(message[9:])
         elif '/translate' in message:
             self.sendMessageLS(chat_id, self.translateYandex(message[11:]))
         elif message == '/restartbot':
