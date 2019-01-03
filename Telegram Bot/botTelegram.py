@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 import datetime
@@ -10,146 +12,199 @@ from misc import token
 
 class Telegram():
 
-	def __init__(self, token):
+    def __init__(self, token):
 
-		self.token = token
-		self.URL = URL = 'https://api.telegram.org/bot' + token + '/'
-		self.last_update_id = 0
-		self.last_time = 0
-		self.start = False
+        self.token = token
+        self.URL = URL = 'https://api.telegram.org/bot' + token + '/'
+        self.last_update_id = 0
+        self.last_time = 0
+        self.start = False
+        self.chat_id_list = []
 
-	def getMe(self):
-		localURL = self.URL + 'getMe'
-		r = requests.get(localURL)
-		return r.json()
+    def getMe(self):
+        localURL = self.URL + 'getMe'
+        r = requests.get(localURL)
+        return r.json()
 
-	def getUpdates(self):
-		localURL = self.URL + 'getupdates'
-		r = requests.get(localURL)
-		return r.json()
+    def getUpdates(self):
+        localURL = self.URL + 'getupdates'
+        r = requests.get(localURL)
+        return r.json()
 
-	def getLastUpdate(self):
+    def getLastUpdate(self):
 
-		return self.getUpdates()['result'][-1]
+        try:
+            return self.getUpdates()['result'][-1]
+        except IndexError as e:
+            pass
 
-	def getLastMessage(self):
+    def getLastMessageId(self):
 
-		return self.getLastUpdate()['message']['text']
+        return int(self.getLastUpdate()['message']['message_id'])
 
-	def getChatId(self):
+    def sendMessageLS(self, chat_id, text):
+        try:
+            localURL = self.URL + 'sendMessage?chat_id='+ str(chat_id) + '&text=' + str(text)
+            requests.get(localURL)
+        except Exception as e:
+            file = open('errors.txt', 'a')
+            file.write('\n1. ' + str(e))
 
-		return str(self.getLastUpdate()['message']['chat']['id'])
+    def sendMessageALL(self, text):
+        try:
+            data = self.jsonFromFile()
+            for x in data:
+                self.sendMessageLS(data[x], text)
+        except Exception as e:
+            pass
+           
 
-	def getLastMessageId(self):
+    def checkMessage(self, message):
 
-		return int(self.getLastUpdate()['message']['message_id'])
+        if message == '':
+            message = 'Your message was blank...'
+            return str(message)
+        else: return str(message)
 
-	def getSecInTime(self, timestr):
+    def translateYandex(self, message):
 
-		return int(timestr[17:])
+        localURL = 'https://translate.yandex.net/api/v1.5/tr.json/translate?'
+        key = 'key=trnsl.1.1.20181225T000211Z.514e88abcce89674.b567950984e5b4104cbc6a5e4637314d3f44e28d&'
+        lang = 'lang=ru&'
+        formatAns = 'format=plain'
 
-	def getTimeMessage(self, chat_id):
+        SendURL = localURL + key + 'text=' + self.checkMessage(message) + '&' + lang + formatAns
+        res = requests.get(SendURL).json()
+        res = str(res['text'])
 
-		return int(self.getLastUpdate()['message']['date'])
+        if self.checkAnswerTranslate(res[2:-2]):
+            return res[2:-2]
+        else:
+            return 'Enter more correctly or otherwise..'
 
-	def toTime(self, timest):
-
-		return datetime.datetime.fromtimestamp(timest).strftime('%Y-%m-%d %H:%M:%S')
-
-	def sendMessage(self, chat_id, text):
-		try:
-			localURL = self.URL + 'sendMessage?chat_id='+ str(chat_id) + '&text=' + str(text)
-			requests.get(localURL)
-		except Exception as e:
-			file = open('errors.txt', 'a')
-			file.write('\n1. ' + str(e))
-
-	def function(self, message):
-
-		current_update_id = self.getLastUpdate()['update_id']
-		current_time = self.getSecInTime(self.toTime(self.getTimeMessage(self.getChatId())))
-
-		if current_update_id != self.last_update_id and current_time - self.last_time > 1:
-
-			self.last_update_id = current_update_id
-			self.last_time = current_time
-
-			if message == '/help':
-				self.sendMessage(self.getChatId(), 'use /translate < what to translate > and all will translated on Russian language!')
-
-			elif message == '/start':
-				self.sendMessage(self.getChatId(), 'Hi ! Read /help and goodluck!')
-
-			elif '/translate' in message:
-					self.sendMessage(self.getChatId(), self.translateYandex(message[11:]))
-
-			elif message == '/restartbot':
-				self.sendMessage(self.getChatId(), 'W8 I start restarted!')
-				os.system("python3 restart.py restart")
-				os.exit(0)
-			else:
-
-				self.sendMessage(self.getChatId(), 'I don\'t know what u want =/')	
-
-	def checkMessage(self, message):
-
-		if message == '':
-			message = 'Your message was blank...'
-			return str(message)
-		else: return str(message)
-
-	def translateYandex(self, message):
-
-		localURL = 'https://translate.yandex.net/api/v1.5/tr.json/translate?'
-		key = 'key=trnsl.1.1.20181225T000211Z.514e88abcce89674.b567950984e5b4104cbc6a5e4637314d3f44e28d&'
-		lang = 'lang=ru&'
-		formatAns = 'format=plain'
-
-		SendURL = localURL + key + 'text=' + self.checkMessage(message) + '&' + lang + formatAns
-		res = requests.get(SendURL).json()
-		res = str(res['text'])
-
-		if self.checkAnswerTranslate(res[2:-2]):
-			return res[2:-2]
-		else:
-			return 'Enter more correctly or otherwise..'
-
-	def jsonToFile(self, data):
-		with open('data.json', 'w') as outfile:
-			json.dump(data, outfile, sort_keys = True, indent = 4,
+    def jsonToFile(self, data):
+        with open('data.json', 'w') as outfile:
+            json.dump(data, outfile, sort_keys = True, indent = 4,
                ensure_ascii = False)
 
-	def checkletterAnswer(self, letter):
+    def checkletterAnswer(self, letter):
 
-		return bool(re.search('[а-яА-Я?!.\-:\s]', letter))
+        return bool(re.search('[а-яА-Я?!.\-:\s]', letter))
 
-	def checkAnswerTranslate(self, text):
-		count = 0
-		for i in text:
-			if self.checkletterAnswer(i) == True:
-				count+=1
-		if count == len(text):
-			return True
-		else: 
-			return False
+    def checkAnswerTranslate(self, text):
+        count = 0
+        for i in text:
+            if self.checkletterAnswer(i) == True:
+                count+=1
+        if count == len(text):
+            return True
+        else: 
+            return False
 
-	def Online(self):
+    def addChatIdIfNew(self, chat_id):
 
-		self.sendMessage(self.getChatId(), 'Bot was restarted!')
+        chat_id = str(chat_id)
 
-		lastMessageId = self.getLastMessageId()
+        if chat_id not in str(self.chat_id_list):
 
-		while True:
-			try:
-				if lastMessageId < self.getLastMessageId():
-					self.function(self.getLastMessage())
-					sleep(2)
-			except IndexError:
-				continue
+            self.chat_id_list.append(chat_id)
+
+            data = {}
+            for i in range(len(self.chat_id_list)):
+                data[i+1] = self.chat_id_list[i]
+            print(data)
+            with open('interlocutors.json', 'w') as outfile:
+                json.dump(data, outfile)
+
+    def getLastMessage(self, chat_id):
+
+        data = self.getUpdates()['result']
+        data.reverse()
+        message = 'not found'
+        for x in data:
+            if x['message']['chat']['id'] == chat_id:
+                message = x['message']['text']
+                break
+
+        return str(message)
+
+    def getChatId(self, message_id):
+
+        data = self.getUpdates()['result']
+        data.reverse()
+        chatid = 0
+        for x in data:
+            if x['message']['message_id'] == message_id:
+                chatid = x['message']['chat']['id']
+                break
+
+        return chatid
+    
+    def function(self, chat_id, message):
+
+        if message == '/help':
+            self.sendMessageLS(chat_id, 'use /translate < what to translate > and all will translated on Russian language!')
+
+        elif message == '/start':
+            self.sendMessageLS(chat_id, 'Hi ! Read /help and goodluck!')
+
+        elif '/translate' in message:
+                self.sendMessageLS(chat_id, self.translateYandex(message[11:]))
+
+        elif message == '/restartbot':
+            self.sendMessageLS(chat_id, 'W8 I start restarted!')
+            os.system("python3 restart.py")
+            sys.exit()
+        else:
+            self.sendMessageLS(chat_id, 'I don\'t know what u want =/')
+    
+    def isNewMessage(self):
+
+        try:
+            lastMessage_id = self.getLastUpdate()['update_id']
+            newMessage_id = self.getLastUpdate()['update_id']
+
+            while newMessage_id == lastMessage_id:
+                data = self.getLastUpdate()
+                newMessage_id = data['update_id']
+
+            message_id = data['message']['message_id']
+
+            return True, message_id
+
+        except Exception as e:
+            pass
+
+    def jsonFromFile(self):
+
+        try:
+            with open ('interlocutors.json') as f:
+                data = json.load(f)
+
+            return data
+
+        except Exception as e:
+            pass
+          
+    def Online(self):
+
+        self.sendMessageALL('Bot was restarted!')
+
+        while True:
+            try:
+                isnew = self.isNewMessage()
+                if (isnew[0]):
+                    chat_id = self.getChatId(isnew[1])
+                    message = self.getLastMessage(chat_id)
+                    self.function(chat_id, message)
+                    self.addChatIdIfNew(chat_id)
+
+            except IndexError:
+                continue
 
 def main():
-	bot = Telegram(token)
-	bot.Online()
+    bot = Telegram(token)
+    bot.Online()
 
 if __name__ == '__main__':
-	main()
+    main()
