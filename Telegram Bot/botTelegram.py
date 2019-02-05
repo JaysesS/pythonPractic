@@ -22,6 +22,7 @@ class Telegram():
 
     def getMe(self):
         localURL = self.URL + 'getMe'
+        print(localURL)
         r = requests.get(localURL)
         return r.json()
 
@@ -54,7 +55,6 @@ class Telegram():
                 self.sendMessageLS(data[x], text)
         except Exception as e:
             pass
-           
 
     def checkMessage(self, message):
         if message == '':
@@ -91,7 +91,7 @@ class Telegram():
                 count+=1
         if count == len(text):
             return True
-        else: 
+        else:
             return False
 
     def addChatIdIfNew(self, chat_id):
@@ -124,7 +124,7 @@ class Telegram():
                 chatid = x['message']['chat']['id']
                 break
         return chatid
-    
+
     def function(self, chat_id, message):
         if message == '/help':
             self.sendMessageLS(chat_id, 'use /translate < what to translate > and all will translated on Russian language!')
@@ -140,7 +140,7 @@ class Telegram():
             sys.exit()
         else:
             self.sendMessageLS(chat_id, 'I don\'t know what u want =/')
-    
+
     def isNewMessage(self):
         try:
             lastMessage_id = self.getLastUpdate()['update_id']
@@ -160,7 +160,7 @@ class Telegram():
             return data
         except Exception as e:
             pass
-          
+
     def Online(self):
         self.sendMessageALL('Bot was restarted!')
         while True:
@@ -176,7 +176,8 @@ class Telegram():
 
 def main():
     bot = Telegram(token)
-    bot.Online()
+    bot.getMe()
+    #bot.Online()
 
 if __name__ == '__main__':
     main()
