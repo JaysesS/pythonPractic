@@ -5,11 +5,12 @@ import random
 sys.path.append(os.path.abspath(__file__))
 
 from mailSender import sendMail
+from mailSender import emailDomen
 
 #Jayse Anime1337 softelele@mail.ru
 #Evas NeAnime1337 softelele2@mail.ru
 #Yasha KitKat0888 softelele@mail.ru
-#Alexsey JopaKota123
+#Alexsey Kobanl33t softelele@mail.ru
 #Anonimus KotVmeshke000 softelele@mail.ru
 
 
@@ -63,8 +64,9 @@ class MySQL():
         id = self.maxIdInTable + 1
         login = str(input("Enter login: ")).capitalize()
         passwd = str(input("Enter password: "))
-        email = str(input("Enter email: ")).capitalize()
-        if self.checkPassword(passwd) and not self.validUser(login):
+        email = str(self.takeAndVerifyEmail(login))
+
+        if self.checkPassword(passwd) and not self.getValidUser(login):
             passwd = self.hashPassword(passwd)
             command = "INSERT INTO {} (id, login, pass, email) VALUES ('{}', '{}', '{}', '{}');".format(self.table, id, login, passwd, email)
             self.mycursor.execute(command)
@@ -88,7 +90,22 @@ class MySQL():
         except Exception as e:
             print("Сheck your input..")
 
-    def validUser(self, login):
+    def takeAndVerifyEmail(self, login):
+
+        while True:
+
+            email = str(input("Enter email: ")).capitalize()
+            print("Check your email for verify!")
+            sendcode = self.generateCode()
+            sendMail(emailDomen, email, login, sendcode, "smtp.mail.ru")
+            code = str(input("Enter code from email: ")).strip()
+            if code == sendcode:
+                print("Mail verify!")
+                return email
+            else:
+                print("Check mail or code!")
+
+    def getValidUser(self, login):
 
         command = "SELECT id FROM {}.{} where login = '{}';".format(self.database, self.table, login)
         self.mycursor.execute(command)
@@ -125,14 +142,14 @@ class MySQL():
         print("Recovery password.")
         login = str(input("Enter login: "))
 
-        if self.validUser(login):
+        if self.getValidUser(login):
 
             codePASS = False
             print("Your account is found, see your email!")
             sendcode = self.generateCode()
             mail = self.takeEmail(login)
 
-            sendMail("python.send@mail.ru", mail, login, sendcode, "smtp.mail.ru")
+            sendMail(emailDomen, mail, login, sendcode, "smtp.mail.ru")
 
             while codePASS == False:
                 code = str(input("Enter code from email: ")).strip()

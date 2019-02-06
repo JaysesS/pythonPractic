@@ -1,5 +1,9 @@
 import smtplib
 
+emailLogin = "python.send"
+emailDomen = "python.send@mail.ru"
+emailPassword = "smotri4toyamogy"
+
 def sendMail(FROM, TO, NAME, CODE, SERVER):
 
     message = "---Password recovery---\
@@ -8,7 +12,7 @@ def sendMail(FROM, TO, NAME, CODE, SERVER):
 
     server = smtplib.SMTP(SERVER)
     server.starttls()
-    server.login('python.send', 'smotri4toyamogy')
+    server.login('{}', '{}').format(emailLogin, emailPassword)
     server.sendmail(FROM, TO, message)
     server.quit()
 
