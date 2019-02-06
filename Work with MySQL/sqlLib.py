@@ -1,11 +1,16 @@
 import mysql.connector
-import sys, string
+import sys, os, string
 import hashlib
+import random
+sys.path.append(os.path.abspath(__file__))
 
-#Jayse Anime1337
-#Evas NeAnime1337
-#Yasha KitKat0999
+from mailSender import sendMail
+
+#Jayse Anime1337 softelele@mail.ru
+#Evas NeAnime1337 softelele2@mail.ru
+#Yasha KitKat0888 softelele@mail.ru
 #Alexsey JopaKota123
+#Anonimus KotVmeshke000 softelele@mail.ru
 
 
 class MySQL():
@@ -56,11 +61,12 @@ class MySQL():
 
         print("Registration.")
         id = self.maxIdInTable + 1
-        login = str(input("Enter login: "))
+        login = str(input("Enter login: ")).capitalize()
         passwd = str(input("Enter password: "))
+        email = str(input("Enter email: ")).capitalize()
         if self.checkPassword(passwd) and not self.validUser(login):
             passwd = self.hashPassword(passwd)
-            command = "INSERT INTO {} (id, login, pass) VALUES ('{}', '{}', '{}');".format(self.table, id, login, passwd)
+            command = "INSERT INTO {} (id, login, pass, email) VALUES ('{}', '{}', '{}', '{}');".format(self.table, id, login, passwd, email)
             self.mycursor.execute(command)
             self.mydb.commit()
             self.printTable()
@@ -94,6 +100,58 @@ class MySQL():
         except Exception as e:
             return False
 
+    def takeEmail(self, login):
+
+        command = "SELECT email FROM {}.{} where login = '{}';".format(self.database, self.table, login)
+        self.mycursor.execute(command)
+        try:
+            for i in self.mycursor:
+                res = i
+            if res != None:
+                return res
+        except Exception as e:
+            pass
+
+    def generateCode(self):
+
+        length = 5
+        code = list('1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+        random.shuffle(code)
+        code = ''.join([random.choice(code) for x in range(length)])
+        return code
+
+    def recoveryPassword(self):
+
+        print("Recovery password.")
+        login = str(input("Enter login: "))
+
+        if self.validUser(login):
+
+            codePASS = False
+            print("Your account is found, see your email!")
+            sendcode = self.generateCode()
+            mail = self.takeEmail(login)
+
+            sendMail("python.send@mail.ru", mail, login, sendcode, "smtp.mail.ru")
+
+            while codePASS == False:
+                code = str(input("Enter code from email: ")).strip()
+                if code == sendcode:
+                    passwd = str(input("Enter new password: "))
+                    if self.checkPassword(passwd):
+                        passwd = self.hashPassword(passwd)
+                        command = "UPDATE {} SET pass = '{}' WHERE login = '{}';".format(self.table, passwd, login)
+                        self.mycursor.execute(command)
+                        self.mydb.commit()
+                        codePASS = True
+                        print("Your password is changed!")
+                    else:
+                        print("Enter good password..")
+                else:
+                    print("Enter correct code!")
+        else:
+            print("That user is not found..")
+
     def getLastIdInTable(self):
 
         command = "SELECT MAX(id) FROM {}".format(self.table)
@@ -126,7 +184,7 @@ class MySQL():
 def main():
 
     workTest = MySQL("localhost","root","passwd","python_test")
-    print("\n1. Register\n2. Login\n3. Print Table\n4. Clear Table\n5. Exit")
+    print("\n1. Register\n2. Login\n3. Recovery password\n4. Print Table\n5. Clear Table\n6. Exit")
     ans = str(input("Choose: "))
     print()
     if(ans == "1"):
@@ -134,10 +192,12 @@ def main():
     if(ans == "2"):
         workTest.loginUser()
     if(ans == "3"):
-        workTest.printTable()
+        workTest.recoveryPassword()
     if(ans == "4"):
-        workTest.clearAllUser()
+        workTest.printTable()
     if(ans == "5"):
+        workTest.clearAllUser()
+    if(ans == "6"):
         sys.exit(0)
 
 if __name__ == '__main__':
