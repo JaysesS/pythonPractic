@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="ru">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Пример на bootstrap 4: Одностраничный шаблон для создания простых и красивых домашних страниц.">
+    <title>Some info about me</title>
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css">
+        <style>
+          .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+          }
+
+          @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+              font-size: 3.5rem;
+            }
+          }
+        </style>
+
+        <link href="{% static 'css/cover.css' %}" rel="stylesheet" type="text/css">
+  </head>
+
+  <body class="text-center">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">Jayse Simple Django App</h3>
+        </div>
+      </header>
+      <main role="main" class="inner cover">
+        <h1 class="cover-heading">Basic information</h1>
+        <p class="lead">
+          {% include "PromoSite/includes/BarHrefInfo.html" %}
+        </p>
+      </main>
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p>Create this page <a href="https://github.com/JaysesS">@JayseSs</a></p>
+        </div>
+      </footer>
+
+    </div>
+  </body>
+</html>

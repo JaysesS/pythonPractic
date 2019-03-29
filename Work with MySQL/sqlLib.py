@@ -71,7 +71,7 @@ class MySQL():
             command = "INSERT INTO {} (id, login, pass, email) VALUES ('{}', '{}', '{}', '{}');".format(self.table, id, login, passwd, email)
             self.mycursor.execute(command)
             self.mydb.commit()
-            self.printTable()
+            #self.printTable()
         else:
             print("Enter good password or your username is already taken!")
 
@@ -97,7 +97,8 @@ class MySQL():
             email = str(input("Enter email: ")).capitalize()
             print("Check your email for verify!")
             sendcode = self.generateCode()
-            sendMail(emailDomen, email, login, sendcode, "smtp.mail.ru")
+            print(sendcode)
+            #sendMail(emailDomen, email, login, sendcode, "smtp.mail.ru")
             code = str(input("Enter code from email: ")).strip()
             if code == sendcode:
                 print("Mail verify!")
@@ -147,10 +148,9 @@ class MySQL():
             codePASS = False
             print("Your account is found, see your email!")
             sendcode = self.generateCode()
+            print(sendcode)
             mail = self.takeEmail(login)
-
-            sendMail(emailDomen, mail, login, sendcode, "smtp.mail.ru")
-
+            #sendMail(emailDomen, mail, login, sendcode, "smtp.mail.ru")
             while codePASS == False:
                 code = str(input("Enter code from email: ")).strip()
                 if code == sendcode:
