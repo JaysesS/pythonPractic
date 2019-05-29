@@ -1,0 +1,58 @@
+{
+    "context": {
+        "api": {
+            "documentation": "https://github.com/Blockchair/Blockchair.Support/blob/master/API.md", 
+            "last_major_update": "2018-07-19 18:07:19", 
+            "next_major_update": null, 
+            "tested_features": "omni-v.a1,whc-v.a1,aggregate-v.b4,xpub-v.b4,ripple-v.a1,ethgraph-v.a1", 
+            "version": "2.0.23"
+        }, 
+        "cache": {
+            "duration": "Ignore", 
+            "live": false, 
+            "since": "2019-05-26 17:27:09", 
+            "time": 5.0067901611328125e-06, 
+            "until": "2020-05-25 17:27:09"
+        }, 
+        "code": 200, 
+        "source": "A", 
+        "state": 584283, 
+        "time": 0.11584806442260742
+    }, 
+    "data": {
+        "average_transaction_fee_24h": 1158, 
+        "average_transaction_fee_usd_24h": 0.004664953839728996, 
+        "best_block_hash": "00000000000000000063d1021f64c9a80e4fe0c56a4a093ecfbad5fca254c99d", 
+        "best_block_height": 584283, 
+        "best_block_time": "2019-05-26 17:20:46", 
+        "blockchain_size": 141362883843, 
+        "blocks": 584284, 
+        "blocks_24h": 144, 
+        "cdd_24h": 1977657.672546821, 
+        "circulation": 1780353964690825, 
+        "difficulty": 321389519882.87, 
+        "hashrate_24h": "2300595795283886298", 
+        "inflation_24h": 180000000000, 
+        "inflation_usd_24h": 724543.2, 
+        "largest_transaction_24h": {
+            "hash": "1ad82fdee9a794cddc3a424658bcc1a1802df6e59e4dc97f9a5e2d533870af69", 
+            "value_usd": 12164820
+        }, 
+        "market_cap_usd": 7166568198, 
+        "market_dominance_percentage": 2.86, 
+        "market_price_btc": 0.050384779071223, 
+        ++"market_price_usd": 402.524, 
+        ++"market_price_usd_change_24h_percentage": 0.11636, 
+        "median_transaction_fee_24h": 274, 
+        ++"median_transaction_fee_usd_24h": 0.00110291576, 
+        "mempool_size": 1599484, 
+        "mempool_total_fee_usd": 1.2102, 
+        "mempool_tps": 0.6333333333333333, 
+        ++"mempool_transactions": 246, 
+        "nodes": 1483, 
+        "outputs": 731526841, 
+        ++"transactions": 272429457, 
+        ++"transactions_24h": 42361, 
+        ++"volume_24h": 276184843513614
+    }
+}
