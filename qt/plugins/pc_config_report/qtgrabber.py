@@ -4,8 +4,8 @@ import sys
 import os
 import time
 
-if os.path.expandvars("$ALG_PY3_LIBS") not in sys.path:
-    sys.path.append(os.path.expandvars("$ALG_PY3_LIBS"))
+# if os.path.expandvars("$ALG_PY3_LIBS") not in sys.path:
+#     sys.path.append(os.path.expandvars("$ALG_PY3_LIBS"))
 
 from PyQt5 import Qt
 from PyQt5 import QtWidgets
@@ -13,6 +13,7 @@ from PyQt5 import QtGui
 import grabber
 
 class MyThread(Qt.QThread):
+
     def __init__(self, users_list = None, path_to_save = None):
         super(MyThread, self).__init__()
         self.users_list = users_list
@@ -46,6 +47,7 @@ class Grabber(QtWidgets.QWidget):
 
     def __init__(self): 
         super(Grabber, self).__init__()
+        
         self.path_exist = False
         self.path_to_save = os.path.realpath('report.xlsx')
         self.path_to_users_list = '/home/vlad/vladcode/qt/plugins/grabber/hosts_list_with_renders.txt'

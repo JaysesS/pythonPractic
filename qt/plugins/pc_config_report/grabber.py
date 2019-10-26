@@ -15,7 +15,7 @@ class Grab():
     def __init__(self, progress_signal, users_list, path_to_save_report):
 
         self.USER = 'farm'
-        self.SECRET = 'Qtuqarf86P'#getpass.getpass("Password for %s: \n" % USER)
+        self.SECRET = getpass.getpass("Password for %s: \n" % USER)
         self.port = 22
 
         self.progress_signal = progress_signal
