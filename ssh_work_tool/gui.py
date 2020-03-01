@@ -166,7 +166,7 @@ class Helper(QWidget):
     def set_dafault_value(self):
         self.ln_ip.setText("a.b.c.ad.d")
         self.ln_login.setText('ad.d.ada')
-        self.ln_pass.setText('a.d.a.da')
+        self.ln_pass.setText('a.d.a.adad')
         self.ln_port.setText('22')
 
     def fill_kmb_users(self):
